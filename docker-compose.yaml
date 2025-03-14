@@ -1,0 +1,29 @@
+services:
+  container10:
+    image: alpine
+    container_name: container10
+    command: sh -c "apk update && apk add --no-cache iputils && tail -f /dev/null"
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "container20"]
+      interval: 30s
+      timeout: 10s
+      retries: 2
+    networks:
+      - my_bridge_network
+
+  container20:
+    image: alpine
+    container_name: container20
+    command: sh -c "apk update && apk add --no-cache iputils && tail -f /dev/null"
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "container10"]
+      interval: 30s
+      timeout: 10s
+      retries: 2
+    networks:
+      - my_bridge_network
+
+networks:
+  my_bridge_network:
+    driver: bridge
+
